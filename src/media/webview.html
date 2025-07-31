@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dark Chat with File</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs/loader.min.js"></script>
+  <script>
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+      // main.js will handle Monaco init
+    });
+  </script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <div id="chatContainer">
+    <div id="messages"></div>
+
+    <form id="chatForm">
+      <div id="filePreviewContainer" style="display: none;">
+        <div id="fileHeader">
+          <span id="fileName"></span>
+          <button type="button" id="removeFile">✕</button>
+        </div>
+        <button id="applyChanges" style="position: absolute; top: 10px; right: 10px; z-index: 10; display: none;"
+          class="apply-btn">
+          Apply Changes
+        </button>
+
+        <div id="fileContent" style="height: 200px; width: 100%;"></div>
+        <!-- <textarea id="fileContent" rows="5"></textarea> -->
+      </div>
+
+      <div id="inputContainer">
+        <button type="button" id="attachFile" title="Attach file">📎</button>
+        <input id="input" type="text" placeholder="Type your message..." />
+        <button type="submit" id="send" disabled>Ask</button>
+      </div>
+
+      <input type="file" id="fileInput" style="display: none;" />
+    </form>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+
+</html>
