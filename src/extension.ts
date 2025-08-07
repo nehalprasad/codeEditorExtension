@@ -107,7 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function getWebviewContent(panel: vscode.WebviewPanel, extensionUri: vscode.Uri): string {
-  const htmlPath = vscode.Uri.joinPath(extensionUri, 'src', 'media', 'webview.html');
+  const htmlPath = vscode.Uri.joinPath(extensionUri, 'src', 'media', 'index.html');
   let html = fs.readFileSync(htmlPath.fsPath, 'utf8');
 
   const cssUri = panel.webview.asWebviewUri(
