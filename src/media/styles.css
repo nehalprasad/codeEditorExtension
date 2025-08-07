@@ -1,24 +1,29 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #121212;
-  color: #f1f1f1;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #e8e8e8;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: stretch;
+  overflow: hidden;
 }
 
 #chatContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   height: 100vh;
-  background: #1e1e1e;
-  border-left: 1px solid #333;
-  border-right: 1px solid #333;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
+  overflow: hidden;
 }
 
 #messages {
@@ -26,131 +31,411 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
-  padding: 1rem;
+  padding: 1.5rem;
   gap: 1rem;
   scroll-behavior: smooth;
+  background: rgba(0, 0, 0, 0.2);
 }
 
-
-.message.user {
-  align-self: flex-end;
-  background: #333;
+#messages::-webkit-scrollbar {
+  width: 6px;
 }
 
-.message.ai {
-  align-self: flex-start;
-  background: #444;
+#messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 
-#chatForm {
-  background: #1e1e1e;
-  border-top: 1px solid #333;
-  display: flex;
-  flex-direction: column;
-  padding: 0.75rem;
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
+#messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
 }
 
-#filePreviewContainer {
-  background: #2a2a2a;
-  border-radius: 6px;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-#fileHeader {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-#fileContent {
-  resize: vertical;
-  background: #1e1e1e;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 4px;
-  padding: 0.5rem;
-  width: 100%;
-}
-
-#inputContainer {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-#input {
-  flex: 1;
-  padding: 0.6rem;
-  background-color: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 4px;
-}
-
-#send,
-#attachFile {
-  padding: 0.6rem 1rem;
-  background-color: #0078d4;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#send:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-}
-
-.timestamp {
-  font-size: 0.75rem;
-  color: #aaa;
-  margin-top: 4px;
-  text-align: right;
-}
-.timestamp {
-  color: #666;
-}
-.message-text {
-  padding-bottom: 4px;
+#messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .message {
-  max-width: 75%;
-  padding: 10px 14px;
-  border-radius: 10px;
-  margin: 8px 0;
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  margin: 4px 0;
   display: flex;
   flex-direction: column;
   position: relative;
   word-break: break-word;
   font-size: 14px;
+  line-height: 1.5;
+  animation: fadeInUp 0.3s ease-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .user {
   align-self: flex-end;
-  background-color: #333;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
+  border-bottom-right-radius: 4px;
 }
 
 .assistant {
   align-self: flex-start;
-  background-color: #2563eb; /* blue */
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
   color: #fff;
+  border-bottom-left-radius: 4px;
 }
 
-/* Timestamp inside the bubble */
+.message-text {
+  padding-bottom: 4px;
+  white-space: pre-wrap;
+}
+
+.message-text code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+.message-text pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
+.message-text pre code {
+  background: none;
+  padding: 0;
+  color: #e8e8e8;
+  font-size: 0.85em;
+  line-height: 1.4;
+}
+
 .timestamp {
-  font-size: 0.75rem;
-  color: #ccc;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
   text-align: right;
   margin-top: 4px;
   align-self: flex-end;
+}
+
+#chatForm {
+  background: rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+#filePreviewContainer {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+#fileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #e8e8e8;
+  font-weight: 500;
+}
+
+#fileName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#fileName::before {
+  content: "📄";
+  font-size: 1.1em;
+}
+
+#removeFile {
+  background: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+#removeFile:hover {
+  background: rgba(255, 59, 48, 0.3);
+  border-color: rgba(255, 59, 48, 0.5);
+}
+
+#fileContent {
+  height: 300px !important;
+  min-height: 200px;
+  background: #1e1e1e;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#inputContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+#input {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+  resize: vertical;
+  min-height: 48px;
+  max-height: 200px;
+  line-height: 1.5;
+  font-family: inherit;
+  box-sizing: border-box;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+#input:focus {
+  outline: none;
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+#input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Style code blocks inside textarea visually (best effort, since textarea can't style inner text) */
+#input {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* If you want to visually hint code blocks, you can use a light border or background for the whole textarea when it contains triple backticks */
+#input.code-block {
+  background: linear-gradient(135deg, #23272e 0%, #1a1a2e 100%);
+  border: 1.5px solid #4facfe;
+  font-family: 'JetBrains Mono', 'Fira Mono', 'Menlo', 'Consolas', monospace;
+}
+
+#send,
+#attachFile {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  min-width: 80px;
+}
+
+#send:hover,
+#attachFile:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+#send:active,
+#attachFile:active {
+  transform: translateY(0);
+}
+
+#send:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+#attachFile {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+  font-size: 16px;
+  padding: 12px;
+  min-width: auto;
+}
+
+#attachFile:hover {
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+.apply-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.apply-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+}
+
+.apply-btn:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading animation for apply button */
+.apply-btn:disabled::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: rgba(255, 255, 255, 0.8);
+  animation: spin 1s linear infinite;
+  margin-left: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.upload-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(79, 172, 254, 0.2);
+  transition: all 0.2s;
+}
+.upload-btn:hover {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+  transform: translateY(-1px);
+}
+.upload-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #chatContainer {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  #messages {
+    padding: 1rem;
+  }
+  
+  .message {
+    max-width: 90%;
+  }
+  
+  #inputContainer {
+    gap: 0.5rem;
+  }
+  
+  #input {
+    padding: 10px 14px;
+  }
+  
+  #send,
+  #attachFile {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }

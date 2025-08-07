@@ -35,6 +35,7 @@ function activate(context) {
         const panel = vscode.window.createWebviewPanel('luminosChatPanel', 'Luminos Chat', vscode.ViewColumn.One, {
             enableScripts: true,
             localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'src', 'media')],
+            retainContextWhenHidden: true
         });
         const html = getWebviewContent(panel, context.extensionUri);
         panel.webview.html = html;
@@ -50,6 +51,65 @@ function activate(context) {
                 }
                 catch (error) {
                     panel.webview.postMessage({ text: `❌ Error: ${error.message}` });
+                }
+            }
+            else if (message.command === 'pickFile') {
+                // Custom QuickPick for fuzzy file search
+                const files = await vscode.workspace.findFiles('**/*', '**/node_modules/**');
+                const items = files.map(uri => ({
+                    label: vscode.workspace.asRelativePath(uri),
+                    uri
+                }));
+                const picked = await vscode.window.showQuickPick(items, {
+                    placeHolder: 'Type to search for a file to add as context',
+                    matchOnDescription: true,
+                    matchOnDetail: true
+                });
+                if (picked && picked.uri) {
+                    const fileUri = picked.uri;
+                    const fileName = fileUri.fsPath.split(/[\\/]/).pop() || '';
+                    const fileContent = (await vscode.workspace.fs.readFile(fileUri)).toString();
+                    // Store the file URI for later use when applying changes
+                    panel.webview.postMessage({
+                        command: 'storeFileUri',
+                        fileUri: fileUri.toString()
+                    });
+                    // Open file in main VS Code editor in a different column to keep webview visible
+                    const doc = await vscode.workspace.openTextDocument(fileUri);
+                    await vscode.window.showTextDocument(doc, vscode.ViewColumn.Two);
+                    // Send file content to webview for Monaco editor
+                    console.log('Sending file to webview:', fileName, 'Content length:', fileContent.length);
+                    panel.webview.postMessage({
+                        command: 'openFileInMonaco',
+                        fileName,
+                        content: fileContent
+                    });
+                    // Bring webview back to focus after a short delay
+                    setTimeout(() => {
+                        panel.reveal();
+                    }, 100);
+                }
+            }
+            else if (message.command === 'applyChanges') {
+                try {
+                    const fileUri = vscode.Uri.parse(message.fileUri);
+                    const newContent = message.content;
+                    // Write the updated content back to the file
+                    await vscode.workspace.fs.writeFile(fileUri, Buffer.from(newContent, 'utf8'));
+                    // Notify the webview that changes were applied successfully
+                    panel.webview.postMessage({
+                        command: 'changesApplied',
+                        success: true
+                    });
+                    console.log('Changes applied successfully to:', fileUri.fsPath);
+                }
+                catch (error) {
+                    console.error('Error applying changes:', error);
+                    panel.webview.postMessage({
+                        command: 'changesApplied',
+                        success: false,
+                        error: error.message
+                    });
                 }
             }
         }, undefined, context.subscriptions);
